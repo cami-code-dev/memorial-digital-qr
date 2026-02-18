@@ -1,0 +1,51 @@
+Instrucciones Iniciales
+
+Blog de Acceso Restringido
+"Un punto crítico que debes implementar ahora mismo: el proyecto es un blog de acceso restringido. Esto implica lo siguiente para el desarrollo:
+
+
+Privacidad por Defecto: El contenido del memorial debe ser privado por defecto y solo puede ser abierto al público bajo acción explícita del usuario custodio.
+
+
+Acceso mediante QR: El acceso público se realiza exclusivamente mediante el escaneo de un código QR físico que apunta a una URL específica de solo lectura.
+
+Gestión de Permisos: Utiliza la lógica de TypeScript y las Security Rules de Firebase para asegurar que el 'Público General' no pueda ver la lista completa de memoriales, sino solo el memorial específico al que apunta el código QR.
+
+Interfaz de Lectura: El acceso para visitantes debe ser directo, silencioso y no invasivo, sin requerir registros previos ni interacciones obligatorias.
+
+Instrucciones de Configuración Inicial: Núcleo de Seguridad y Modelos
+"Actúa como un desarrollador experto en Ionic, Angular y Firebase. Configura el inicio del proyecto siguiendo estas directrices técnicas estrictas:
+
+1. Definición de Modelos y Tipado (TypeScript):
+Crea un archivo de modelos centralizado. Usa TypeScript para definir interfaces que blinden el sistema:
+
+
+Jerarquía de Usuarios: Define los roles ADMIN (control total), CUSTODIO (edición autorizada) y PUBLICO (solo lectura).
+
+
+Modelo de Memorial: Debe incluir nombreDifunto: string, biografia: string, fechaDefuncion: Date (para evitar errores de formato en HTML) y un arreglo de objetos multimedia para imágenes y audio.
+
+
+Consentimiento Obligatorio: Incluye un campo booleano consentimientoConfirmado: boolean que sea requisito indispensable para cualquier operación de escritura en Firebase.
+
+2. Arquitectura y Frontend (Ionic/Angular/HTML/CSS):
+
+
+Estructura: Implementa una arquitectura modular con componentes independientes y servicios desacoplados para separar la lógica de negocio de la interfaz.
+
+
+Estética Sobria: La interfaz debe ser respetuosa y adaptativa (Responsive Design) usando CSS.
+
+
+Restricciones Éticas: No incluyas funciones de 'likes', comentarios, ni avatares o voces sintéticas que imiten al difunto.
+
+Optimización Rural: Prepara el sistema para Lazy Loading. Las peticiones multimedia a Firebase Storage solo deben activarse cuando el contenido sea visible en el scroll del navegador para ahorrar datos móviles.
+
+3. Backend y Privacidad (Firebase/Node.js):
+
+Conexión: Configura los servicios de Firestore (base de datos NoSQL), Auth (autenticación) y Storage (archivos).
+
+Zero-Tracking: Inicializa Firebase de modo que el almacenamiento local se limite a la sesión de usuario, evitando cookies de rastreo o scripts publicitarios.
+
+
+Validación de Archivos: Antes de cualquier subida, el código debe validar en el cliente que los archivos (JPG, MP3) no superen el límite de peso establecido para proteger las cuotas del plan gratuito."
