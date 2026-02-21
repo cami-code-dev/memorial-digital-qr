@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memorial Digital QR</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Memorial Digital</h1>
+      <p>Preserva la memoria de quienes amas</p>
+    </div>
+
+    <div class="card">
+      <h2>Crear un nuevo memorial</h2>
+      <p style="color: var(--text-light); margin-bottom: 1.5rem;">
+        Crea un espacio digital donde familiares y amigos pueden compartir recuerdos.
+        Se generará un código QR único para compartir el acceso.
+      </p>
+
+      <form action="/create" method="POST">
+        <div class="form-group">
+          <label for="name">Nombre completo</label>
+          <input type="text" id="name" name="name" required placeholder="Nombre de la persona">
+        </div>
+
+        <div class="form-group">
+          <label for="birthDate">Fecha de nacimiento</label>
+          <input type="date" id="birthDate" name="birthDate">
+        </div>
+
+        <div class="form-group">
+          <label for="deathDate">Fecha de fallecimiento</label>
+          <input type="date" id="deathDate" name="deathDate">
+        </div>
+
+        <div class="form-group">
+          <label for="description">Descripción / Biografía</label>
+          <textarea id="description" name="description" placeholder="Escribe una breve descripción o biografía..."></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Crear Memorial</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

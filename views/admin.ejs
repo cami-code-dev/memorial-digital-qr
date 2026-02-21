@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administrar - <%= memorial.name %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Panel de Administración</h1>
+      <p>Memorial de <%= memorial.name %></p>
+    </div>
+
+    <div class="card qr-section">
+      <h2>Código QR de acceso</h2>
+      <p style="color: var(--text-light);">Comparte este código QR para dar acceso al memorial</p>
+      <img src="<%= qrDataUrl %>" alt="Código QR" width="250">
+      <div class="qr-link"><%= accessUrl %></div>
+    </div>
+
+    <div class="card">
+      <h2>Editar memorial</h2>
+      <form action="/admin/<%= adminToken %>/update" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="name">Nombre completo</label>
+          <input type="text" id="name" name="name" value="<%= memorial.name %>" required>
+        </div>
+
+        <div class="form-group">
+          <label for="birthDate">Fecha de nacimiento</label>
+          <input type="date" id="birthDate" name="birthDate" value="<%= memorial.birth_date ? new Date(memorial.birth_date).toISOString().split('T')[0] : '' %>">
+        </div>
+
+        <div class="form-group">
+          <label for="deathDate">Fecha de fallecimiento</label>
+          <input type="date" id="deathDate" name="deathDate" value="<%= memorial.death_date ? new Date(memorial.death_date).toISOString().split('T')[0] : '' %>">
+        </div>
+
+        <div class="form-group">
+          <label for="description">Descripción / Biografía</label>
+          <textarea id="description" name="description"><%= memorial.description || '' %></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="coverImage">Imagen de portada</label>
+          <input type="file" id="coverImage" name="coverImage" accept="image/*">
+          <% if (memorial.cover_image) { %>
+            <p style="font-size: 0.85rem; color: var(--text-light); margin-top: 0.25rem;">Imagen actual cargada</p>
+          <% } %>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <div class="flex-between mb-1">
+        <h2 style="margin-bottom: 0;">Recuerdos (<%= entries.length %>)</h2>
+      </div>
+
+      <% if (entries.length === 0) { %>
+        <p style="color: var(--text-light); font-style: italic;">No hay recuerdos aún.</p>
+      <% } %>
+
+      <% entries.forEach(entry => { %>
+        <div class="entry">
+          <div class="flex-between">
+            <div>
+              <div class="entry-author"><%= entry.author %></div>
+              <div class="entry-date"><%= new Date(entry.created_at).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }) %></div>
+            </div>
+            <form action="/admin/<%= adminToken %>/delete-entry/<%= entry.id %>" method="POST" style="display: inline;" onsubmit="return confirm('¿Eliminar este recuerdo?')">
+              <button type="submit" class="btn btn-danger btn-small">Eliminar</button>
+            </form>
+          </div>
+          <div class="entry-body"><%= entry.body %></div>
+          <% if (entry.image_url) { %>
+            <img src="<%= entry.image_url %>" alt="Imagen" class="entry-image">
+          <% } %>
+        </div>
+      <% }) %>
+    </div>
+
+    <div class="card" style="border-color: #c0392b;">
+      <h2 style="color: #c0392b;">Zona de peligro</h2>
+      <p style="color: var(--text-light); margin-bottom: 1rem;">Eliminar el memorial de forma permanente, incluyendo todos los recuerdos.</p>
+      <form action="/admin/<%= adminToken %>/delete" method="POST" onsubmit="return confirm('¿Estás seguro? Esta acción no se puede deshacer.')">
+        <button type="submit" class="btn btn-danger">Eliminar memorial</button>
+      </form>
+    </div>
+
+    <div class="text-center mt-2">
+      <p style="font-size: 0.85rem; color: var(--text-light);">
+        Guarda este enlace de administración. Es la única forma de acceder a este panel.<br>
+        <strong>No lo compartas.</strong>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

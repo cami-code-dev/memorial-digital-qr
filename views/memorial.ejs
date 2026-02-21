@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memorial de <%= memorial.name %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>En memoria de</h1>
+      <h1 style="font-size: 2.2rem;"><%= memorial.name %></h1>
+      <% if (memorial.birth_date || memorial.death_date) { %>
+        <p class="memorial-dates">
+          <% if (memorial.birth_date) { %><%= new Date(memorial.birth_date).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' }) %><% } %>
+          <% if (memorial.birth_date && memorial.death_date) { %> — <% } %>
+          <% if (memorial.death_date) { %><%= new Date(memorial.death_date).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' }) %><% } %>
+        </p>
+      <% } %>
+    </div>
+
+    <% if (memorial.cover_image) { %>
+      <img src="<%= memorial.cover_image %>" alt="<%= memorial.name %>" class="memorial-cover">
+    <% } %>
+
+    <% if (memorial.description) { %>
+      <div class="card">
+        <div class="memorial-description"><%= memorial.description %></div>
+      </div>
+    <% } %>
+
+    <hr class="divider">
+
+    <h2>Recuerdos compartidos</h2>
+
+    <% if (entries.length === 0) { %>
+      <p style="color: var(--text-light); font-style: italic;">
+        Aún no hay recuerdos compartidos. Sé el primero en dejar uno.
+      </p>
+    <% } %>
+
+    <% entries.forEach(entry => { %>
+      <div class="entry">
+        <div class="entry-author"><%= entry.author %></div>
+        <div class="entry-date"><%= new Date(entry.created_at).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }) %></div>
+        <div class="entry-body"><%= entry.body %></div>
+        <% if (entry.image_url) { %>
+          <img src="<%= entry.image_url %>" alt="Imagen del recuerdo" class="entry-image">
+        <% } %>
+      </div>
+    <% }) %>
+
+    <hr class="divider">
+
+    <div class="card">
+      <h2>Compartir un recuerdo</h2>
+      <form action="/m/<%= token %>/entry" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="author">Tu nombre</label>
+          <input type="text" id="author" name="author" placeholder="Anónimo">
+        </div>
+
+        <div class="form-group">
+          <label for="body">Tu recuerdo</label>
+          <textarea id="body" name="body" required placeholder="Comparte un recuerdo, anécdota o mensaje..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="image">Imagen (opcional)</label>
+          <input type="file" id="image" name="image" accept="image/*">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Compartir recuerdo</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
