@@ -1,103 +1,47 @@
-import express, { type Request, Response, NextFunction } from "express";
-import { registerRoutes } from "./routes";
-import { serveStatic } from "./static";
-import { createServer } from "http";
+import { spawn } from 'child_process';
+import * as fs from 'fs';
+import * as path from 'path';
 
-const app = express();
-const httpServer = createServer(app);
+const projectId = process.env.VITE_FIREBASE_PROJECT_ID || '';
+const apiKey = process.env.VITE_FIREBASE_API_KEY || '';
+const appId = process.env.VITE_FIREBASE_APP_ID || '';
 
-declare module "http" {
-  interface IncomingMessage {
-    rawBody: unknown;
+const envContent = `export const environment = {
+  production: false,
+  firebase: {
+    apiKey: '${apiKey}',
+    authDomain: '${projectId}.firebaseapp.com',
+    projectId: '${projectId}',
+    storageBucket: '${projectId}.firebasestorage.app',
+    appId: '${appId}',
+  },
+};
+`;
+
+const envPath = path.join(process.cwd(), 'src', 'environments', 'environment.ts');
+fs.mkdirSync(path.dirname(envPath), { recursive: true });
+fs.writeFileSync(envPath, envContent);
+console.log('Environment file generated with Firebase config.');
+
+const ngBin = path.join(process.cwd(), 'node_modules', '.bin', 'ng');
+const ngServe = spawn(
+  ngBin,
+  ['serve', '--host', '0.0.0.0', '--port', '5000', '--disable-host-check', '--configuration', 'development'],
+  {
+    stdio: 'inherit',
+    env: { ...process.env, NG_CLI_ANALYTICS: 'false' },
+    cwd: process.cwd(),
   }
-}
-
-app.use(
-  express.json({
-    verify: (req, _res, buf) => {
-      req.rawBody = buf;
-    },
-  }),
 );
 
-app.use(express.urlencoded({ extended: false }));
-
-export function log(message: string, source = "express") {
-  const formattedTime = new Date().toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: true,
-  });
-
-  console.log(`${formattedTime} [${source}] ${message}`);
-}
-
-app.use((req, res, next) => {
-  const start = Date.now();
-  const path = req.path;
-  let capturedJsonResponse: Record<string, any> | undefined = undefined;
-
-  const originalResJson = res.json;
-  res.json = function (bodyJson, ...args) {
-    capturedJsonResponse = bodyJson;
-    return originalResJson.apply(res, [bodyJson, ...args]);
-  };
-
-  res.on("finish", () => {
-    const duration = Date.now() - start;
-    if (path.startsWith("/api")) {
-      let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
-      if (capturedJsonResponse) {
-        logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
-      }
-
-      log(logLine);
-    }
-  });
-
-  next();
+ngServe.on('error', (err) => {
+  console.error('Failed to start Angular dev server:', err);
+  process.exit(1);
 });
 
-(async () => {
-  await registerRoutes(httpServer, app);
+ngServe.on('close', (code) => {
+  process.exit(code ?? 0);
+});
 
-  app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
-
-    console.error("Internal Server Error:", err);
-
-    if (res.headersSent) {
-      return next(err);
-    }
-
-    return res.status(status).json({ message });
-  });
-
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  if (process.env.NODE_ENV === "production") {
-    serveStatic(app);
-  } else {
-    const { setupVite } = await import("./vite");
-    await setupVite(httpServer, app);
-  }
-
-  // ALWAYS serve the app on the port specified in the environment variable PORT
-  // Other ports are firewalled. Default to 5000 if not specified.
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
-  const port = parseInt(process.env.PORT || "5000", 10);
-  httpServer.listen(
-    {
-      port,
-      host: "0.0.0.0",
-      reusePort: true,
-    },
-    () => {
-      log(`serving on port ${port}`);
-    },
-  );
-})();
+process.on('SIGINT', () => ngServe.kill('SIGINT'));
+process.on('SIGTERM', () => ngServe.kill('SIGTERM'));
