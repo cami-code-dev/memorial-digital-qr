@@ -130,6 +130,7 @@ a:hover { text-decoration: underline; }
   border-color: var(--accent);
 }
 
+/* --- SECCIÓN DE BOTONES --- */
 .btn {
   display: inline-block;
   padding: 0.7rem 1.5rem;
@@ -138,7 +139,7 @@ a:hover { text-decoration: underline; }
   font-family: inherit;
   font-size: 1rem;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s, color 0.2s;
 }
 
 .btn-primary {
@@ -147,6 +148,17 @@ a:hover { text-decoration: underline; }
 }
 
 .btn-primary:hover { background: var(--accent-light); }
+
+/* Nuevo estilo propuesto para botones secundarios/iniciar sesión */
+.btn-outline {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+
+.btn-outline:hover {
+  background: var(--bg);
+}
 
 .btn-danger {
   background: #c0392b;
@@ -160,6 +172,7 @@ a:hover { text-decoration: underline; }
   font-size: 0.85rem;
 }
 
+/* --- SECCIÓN QR Y DIVISORES --- */
 .qr-section {
   text-align: center;
   padding: 1.5rem;
