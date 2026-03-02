@@ -34,14 +34,19 @@ src/
     app.component.ts       - Root component with ion-router-outlet
     app.routes.ts          - Lazy-loaded route definitions with guards
     firebase.config.ts     - Firebase/Firestore initialization
+    core/
+      models/
+        memorial.model.ts  - Memorial interface + Visibility type (PRIVADO/RESTRINGIDO/PUBLICO/INACTIVO)
+        user.model.ts      - UserBase interface + UserRole type (ADMIN/CUSTODIO/PUBLICO)
+      auth/
+        auth.service.ts    - Firebase Auth + Firestore user profiles + UID sanitization + strict typing
+        role.guard.ts      - Role-based guard (CUSTODIO/ADMIN required, PUBLICO redirected to /login)
     services/
-      auth.service.ts      - Firebase Auth + Firestore user profiles + role management
       memorial.service.ts  - Firestore CRUD with consent validation + audit logging
       media.service.ts     - Firebase Storage uploads with 50MB validation + lazy loading
       audit.service.ts     - Audit log service (writes to 'Logs' collection)
     guards/
       auth.guard.ts        - Authentication guard (redirects to /login)
-      role.guard.ts        - Role-based guard (CUSTODIO required for create/edit)
     pages/
       landing/             - Public landing page
       login/               - Email/password login form

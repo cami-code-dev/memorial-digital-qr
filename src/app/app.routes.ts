@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard, guestGuard } from './guards/auth.guard';
-import { roleGuard } from './guards/role.guard';
+import { roleGuard } from './core/auth/role.guard';
 
 export const routes: Routes = [
   {

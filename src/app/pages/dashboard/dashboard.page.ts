@@ -37,7 +37,7 @@ import {
   logOutOutline,
   heartOutline,
 } from 'ionicons/icons';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../core/auth/auth.service';
 import { MemorialService } from '../../services/memorial.service';
 import { Memorial } from '../../models/memorial.model';
 import * as QRCode from 'qrcode';

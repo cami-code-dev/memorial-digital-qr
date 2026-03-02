@@ -19,7 +19,7 @@ import {
   IonBackButton,
   IonButtons,
 } from '@ionic/angular/standalone';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../core/auth/auth.service';
 
 @Component({
   selector: 'app-register',
